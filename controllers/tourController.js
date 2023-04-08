@@ -3,6 +3,7 @@ const express = require('express');
 
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`));
 
+//Check ID
 exports.checkID = (req, res, next, value) => {
   console.log(`Tour id is: ${value}`);
 
@@ -16,6 +17,16 @@ exports.checkID = (req, res, next, value) => {
   next();
 };
 
+//Check req.body
+exports.checkReqBody = (req, res, next) => {
+  if (!req.body.name || !req.body.price) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Missing name or price',
+    });
+  }
+  next();
+};
 //----------------------- Get all tours 🟨
 exports.getAllTours = (req, res) => {
   console.log(req.requestTime);
