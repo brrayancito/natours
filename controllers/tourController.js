@@ -1,5 +1,4 @@
 const fs = require('fs');
-const express = require('express');
 
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`));
 
@@ -45,7 +44,7 @@ exports.getTour = (req, res) => {
   console.log(req.params);
 
   const id = req.params.id * 1;
-  const tour = tours.find((tour) => tour.id === id);
+  const tour = tours.find((el) => el.id === id);
 
   res.status(200).json({
     status: 'success',

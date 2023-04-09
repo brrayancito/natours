@@ -1,4 +1,3 @@
-const fs = require('fs');
 const express = require('express');
 
 const tourController = require('./../controllers/tourController.js');
@@ -13,6 +12,7 @@ router
   .route('/')
   .get(tourController.getAllTours)
   .post(tourController.checkReqBody, tourController.createTour);
+
 router
   .route('/:id')
   .get(tourController.getTour)
