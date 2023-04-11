@@ -6,7 +6,7 @@ dotenv.config({ path: './config.env' });
 
 const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
 
-//Connecting DATABASE
+//Connecting to MongoDB Atlas DATABASE
 mongoose
   .connect(DB, {
     useNewUrlParser: true,
@@ -15,8 +15,25 @@ mongoose
   })
   .then(() => console.log('Connection successful!'));
 
-// console.log(process.env);
-// console.log(app.get('env'));
+//Creating a Schema
+const tourSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'A Tour must have a name'],
+    unique: true,
+  },
+  rating: {
+    type: Number,
+    default: 3.5,
+  },
+  price: {
+    type: Number,
+    required: [true, 'A Tour must have a price'],
+  },
+});
+
+//Creating a model
+const Tour = mongoose.model('Tour', tourSchema);
 
 //-------------START THE SERVER ⚪
 const port = process.env.PORT;
