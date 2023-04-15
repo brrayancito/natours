@@ -4,13 +4,19 @@ const Tour = require('../models/tourModel.js');
 exports.getAllTours = async (req, res) => {
   try {
     //BUILD QUERY
-    console.log(req.query);
+    //1) Filtering
     const queryObject = { ...req.query };
     const excludeFields = ['page', 'sort', 'limit', 'fields'];
     excludeFields.forEach((el) => delete queryObject[el]);
 
-    console.log(req.query, queryObject);
-    const query = Tour.find(queryObject);
+    //2) Advanced filtering
+    let queryStr = JSON.stringify(req.query);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    console.log(req.query); // { difficulty: 'easy', duration: { gte: '4' } }
+    console.log(JSON.parse(queryStr)); // { difficulty: 'easy', duration: { '$gte': '4' } }
+
+    const query = Tour.find(JSON.parse(queryStr));
 
     //EXECURE QUERY
     const tours = await query;
