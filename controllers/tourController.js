@@ -26,6 +26,28 @@ exports.getAllTours = async (req, res) => {
       query = query.sort('price');
     }
 
+    //3) Fields Limiting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+      query = query.select(fields);
+      // query = query.select('name price difficulty duration');
+    } else {
+      query = query.select('-__v');
+    }
+
+    //4) Pagination
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+
+    // page=3&limit=10: 1-10: page 1; 11-20: page 2; 21-30: page 3;...
+    query = query.skip(skip).limit(limit);
+
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments();
+      if (skip >= numTours) throw new Error('This page does not exist!');
+    }
+
     //EXECURE QUERY
     const tours = await query;
 
@@ -47,7 +69,7 @@ exports.getAllTours = async (req, res) => {
   } catch (err) {
     res.status(400).json({
       status: 'fail',
-      message: err,
+      message: err.message,
     });
   }
 };
