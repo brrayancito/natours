@@ -9,6 +9,8 @@ router.route('/top-5-cheap').get(tourController.aliasTopTours, tourController.ge
 
 router.route('/').get(tourController.getAllTours).post(tourController.createTour);
 
+router.route('/tour-stats').get(tourController.getTourStats);
+
 router
   .route('/:id')
   .get(tourController.getTour)
