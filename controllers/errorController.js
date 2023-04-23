@@ -7,12 +7,19 @@ const handledCastErrorDB = (err) => {
 };
 
 //---------------------------------------
+const handledDuplicateFieldsDB = (err) => {
+  const value = err.keyValue.name;
+  const message = `Duplicate field value: ${value}. Please use another value!`;
+  return new AppError(message, 400);
+};
+
+//---------------------------------------
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
     message: err.message,
-    stack: err.stack,
     error: err,
+    stack: err.stack,
   });
 };
 
@@ -51,6 +58,7 @@ module.exports = (err, req, res, next) => {
     let error = Object.assign(err);
     // let error = {...err,};
     if (error.name === 'CastError') error = handledCastErrorDB(error);
+    if (error.code === 11000) error = handledDuplicateFieldsDB(error);
 
     sendErrorProd(error, res);
   }
