@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema({
     required: [true, 'A User must have a password'],
     minLength: 8,
     trim: true,
+    select: false,
   },
   passwordConfirm: {
     type: String,
@@ -38,6 +39,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+//MIDDLEWARE
 userSchema.pre('save', async function (next) {
   //Only run this function if password was actually modified
   if (!this.isModified('password')) return next();
@@ -50,6 +52,11 @@ userSchema.pre('save', async function (next) {
 
   next();
 });
+
+//METHODS
+userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 const User = mongoose.model('User', userSchema);
 
