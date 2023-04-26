@@ -62,7 +62,7 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 //--------------------------------------------------------
-//PROTECT
+//PROTECT ROUTES
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
   //1) Getting token and check if it's there
@@ -102,3 +102,34 @@ exports.restrictTo =
 
     next();
   };
+
+//--------------------------------------------------------
+//FORGOT PASSWORD
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+  //1) Get user based on POSTED email
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) return next(new AppError('There is not user with that email address', 404));
+
+  //2) Generate the random reset token
+  const resetToken = user.createPasswordResetToken();
+
+  await user.save({ validateBeforeSave: false });
+
+  //3) Send it to user's email
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user,
+    },
+    resetToken,
+  });
+
+  next();
+});
+
+//--------------------------------------------------------
+//RESET PASSWORD
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  next();
+});
