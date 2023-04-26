@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
-const app = require('./app.js');
 
 // ------------------- Uncaught Exceptions
 process.on('uncaughtException', (err) => {
@@ -11,6 +10,7 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
+const app = require('./app.js');
 const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
 
 //Connecting to MongoDB Atlas DATABASE

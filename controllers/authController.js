@@ -4,12 +4,14 @@ const User = require('../models/userModel.js');
 const catchAsync = require('../utils/catchAsync.js');
 const AppError = require('../utils/appError.js');
 
+//------------------------------------------------------
 //SIGN TOKEN
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
+//---------------------------------------------------
 //SIGN UP
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
@@ -18,6 +20,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
+    role: req.body.role,
   });
 
   const token = signToken(newUser._id);
@@ -31,6 +34,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   });
 });
 
+//--------------------------------------------------------
 //LOGIN
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
@@ -58,6 +62,7 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 //--------------------------------------------------------
+//PROTECT
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
   //1) Getting token and check if it's there
@@ -84,3 +89,16 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+
+//--------------------------------------------------------
+//RESTRICT TO
+exports.restrictTo =
+  (...roles) =>
+  (req, res, next) => {
+    //Roles ['admin', 'lead-guide']
+    if (!roles.includes(req.user.role)) {
+      return next(new AppError('You do not have permission to perform this action', 403));
+    }
+
+    next();
+  };
