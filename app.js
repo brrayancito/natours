@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 
 const AppError = require('./utils/appError.js');
 const globalErrorHandler = require('./controllers/errorController.js');
@@ -8,28 +9,36 @@ const tourRouter = require('./routes/tourRoutes.js');
 const userRouter = require('./routes/userRoutes.js');
 
 const app = express();
-app.use(express.json());
-
-//Static files
-app.use(express.static(`${__dirname}/public`));
 
 // ----------------------GLOBAL Middlewares 🟨
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
+//Set Security HTTP headers
+app.use(helmet());
 
-app.use((req, res, next) => {
-  req.requestTime = new Date().toISOString();
+//Body parser, reading data from the body into req.body
+app.use(express.json({ limit: '10kb' }));
 
-  next();
-});
+//Serving Static files
+app.use(express.static(`${__dirname}/public`));
 
+//Limit requests from same API
 const limiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,
   message: 'Too many request from this IP. Please try again in an hour!',
 });
 app.use('/api', limiter);
+
+//Development logging
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
+
+//Test middleware
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+
+  next();
+});
 
 //-------------Routes 🟨
 app.use('/api/v1/tours', tourRouter);
