@@ -30,7 +30,7 @@ const createSendToken = (user, statusCode, res) => {
   //Send JWT Token by cokkie
   res.cookie('jwt', token, cookieOptions);
 
-  //Respond to the client
+  //Response to the client
   res.status(statusCode).json({
     status: 'success',
     token,
