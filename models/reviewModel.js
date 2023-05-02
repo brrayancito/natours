@@ -43,7 +43,7 @@ reviewSchema.pre('save', function (next) {
 
 //MIDDLEWARE: Query
 reviewSchema.pre(/^find/, function (next) {
-  this.select('-__v -createAt');
+  this.select('-createAt -__v');
   next();
 });
 
@@ -51,10 +51,10 @@ reviewSchema.pre(/^find/, function (next) {
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'tour',
-    select: '-__v',
+    select: 'name',
   }).populate({
     path: 'user',
-    select: '-__v -passwordChangedAt',
+    select: 'name',
   });
 
   next();
