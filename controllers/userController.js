@@ -49,7 +49,7 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 
 //------------------------ Get All Users 🟨
 exports.getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find();
+  const users = await User.find().select('-__v');
 
   res.status(200).json({
     status: 'success',
