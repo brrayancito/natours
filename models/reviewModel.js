@@ -5,7 +5,7 @@ const reviewSchema = new mongoose.Schema(
   {
     review: {
       type: String,
-      require: [true, 'Review can not be empty'],
+      required: [true, 'Review can not be empty'],
       trim: true,
     },
     rating: {
@@ -21,12 +21,12 @@ const reviewSchema = new mongoose.Schema(
     tour: {
       type: mongoose.Schema.ObjectId,
       ref: 'Tour',
-      require: [true, 'Review must belong to a tour.'],
+      required: [true, 'Review must belong to a tour.'],
     },
     user: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
-      require: [true, 'Review must belong to a user.'],
+      required: [true, 'Review must belong to a user.'],
     },
   },
   {
@@ -34,6 +34,31 @@ const reviewSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+
+//MIDDLEWARE: Documents
+reviewSchema.pre('save', function (next) {
+  this.createAt = Date.now();
+  next();
+});
+
+//MIDDLEWARE: Query
+reviewSchema.pre(/^find/, function (next) {
+  this.select('-__v -createAt');
+  next();
+});
+
+//Populate query
+reviewSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'tour',
+    select: '-__v',
+  }).populate({
+    path: 'user',
+    select: '-__v -passwordChangedAt',
+  });
+
+  next();
+});
 
 const Review = mongoose.model('Review', reviewSchema);
 
