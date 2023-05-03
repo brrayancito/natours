@@ -122,6 +122,13 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
+//Virtual Populate
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
+});
+
 // DOCUMENTS MIDDLEWARE: runs before .save() and create()
 tourSchema.pre('save', function (next) {
   // console.log(this);
@@ -153,7 +160,7 @@ tourSchema.pre('save', function (next) {
 // tourSchema.pre('find', function (next) {
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
-
+  // this.select('-__v');
   this.start = Date.now();
   next();
 });
