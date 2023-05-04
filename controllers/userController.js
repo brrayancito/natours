@@ -1,6 +1,7 @@
 const User = require('../models/userModel.js');
 const catchAsync = require('../utils/catchAsync.js');
 const AppError = require('../utils/appError.js');
+const factory = require('./handlerFactory.js');
 
 //FILTER A OBJECT
 const filterObj = (obj, ...allowedFields) => {
@@ -70,4 +71,4 @@ exports.createUser = (req, res) => {};
 exports.updateUser = (req, res) => {};
 
 //---------------------------- Delete User🟨
-exports.deleteUser = (req, res) => {};
+exports.deleteUser = factory.deleteOne(User);
