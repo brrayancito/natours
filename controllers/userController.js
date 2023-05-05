@@ -65,10 +65,11 @@ exports.getAllUsers = catchAsync(async (req, res) => {
 exports.getUser = (req, res) => {};
 
 //--------------------------- Create User 🟨
-exports.createUser = (req, res) => {};
+//Already have the SignUp
 
 //--------------------------- Update User 🟨
-exports.updateUser = (req, res) => {};
+//Do NOT update password with this!
+exports.updateUser = factory.updateOne(User);
 
 //---------------------------- Delete User🟨
 exports.deleteUser = factory.deleteOne(User);
