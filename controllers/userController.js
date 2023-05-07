@@ -49,20 +49,10 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 });
 
 //------------------------ Get All Users 🟨
-exports.getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find().select('-__v');
-
-  res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
+exports.getAllUsers = factory.getAll(User);
 
 //------------------------------ Get User 🟨
-exports.getUser = (req, res) => {};
+exports.getUser = factory.getOne(User);
 
 //--------------------------- Create User 🟨
 //Already have the SignUp

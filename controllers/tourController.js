@@ -1,6 +1,4 @@
 const Tour = require('../models/tourModel.js');
-const APIFeactures = require('../utils/apiFeatures.js');
-
 const AppError = require('../utils/appError.js');
 const catchAsync = require('../utils/catchAsync.js');
 const factory = require('./handlerFactory.js');
@@ -14,41 +12,44 @@ exports.aliasTopTours = (req, res, next) => {
 };
 
 //----------------------- Get all tours 🟨
-exports.getAllTours = catchAsync(async (req, res, next) => {
-  //EXECURE QUERY
-  const feactures = new APIFeactures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-  const tours = await feactures.query;
+exports.getAllTours = factory.getAll(Tour);
+// exports.getAllTours = catchAsync(async (req, res, next) => {
+//   //EXECURE QUERY
+//   const feactures = new APIFeactures(Tour.find(), req.query)
+//     .filter()
+//     .sort()
+//     .limitFields()
+//     .paginate();
+//   const tours = await feactures.query;
 
-  //SEND RESPONSE
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours,
-    },
-  });
-});
+//   //SEND RESPONSE
+//   res.status(200).json({
+//     status: 'success',
+//     results: tours.length,
+//     data: {
+//       tours,
+//     },
+//   });
+// });
 
 // ---------------------------Get Tour 🟨
-exports.getTour = catchAsync(async (req, res, next) => {
-  // const tour = await Tour.findOne({ _id: req.params.id });
-  const tour = await Tour.findById(req.params.id).populate('reviews');
+exports.getTour = factory.getOne(Tour, 'reviews');
 
-  if (!tour) {
-    return next(new AppError('No tour found with that ID', 404));
-  }
+// exports.getTour = catchAsync(async (req, res, next) => {
+//   // const tour = await Tour.findOne({ _id: req.params.id });
+//   const tour = await Tour.findById(req.params.id).populate('reviews');
 
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-});
+//   if (!tour) {
+//     return next(new AppError('No tour found with that ID', 404));
+//   }
+
+//   res.status(200).json({
+//     status: 'success',
+//     data: {
+//       tour,
+//     },
+//   });
+// });
 
 // -----------------------Create Tour 🟨
 exports.createTour = factory.createOne(Tour);

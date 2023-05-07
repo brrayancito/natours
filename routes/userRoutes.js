@@ -2,6 +2,7 @@ const express = require('express');
 
 const userController = require('../controllers/userController.js');
 const authController = require('../controllers/authController.js');
+const reviewRouter = require('./reviewRoutes.js');
 
 const router = express.Router();
 
@@ -15,6 +16,9 @@ router.delete('/deleteMe', authController.protect, userController.deleteMe);
 router.patch('/updateMyPassword', authController.protect, authController.updatePassword);
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
+
+//Nested Routes with Express (users routes and review routes)
+router.use('/:userId/reviews', reviewRouter);
 
 router.route('/').get(userController.getAllUsers);
 router

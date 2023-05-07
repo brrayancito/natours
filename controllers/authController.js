@@ -1,11 +1,11 @@
-const { promisify } = require('util');
 const crypto = require('crypto');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel.js');
 const catchAsync = require('../utils/catchAsync.js');
 const AppError = require('../utils/appError.js');
 const sendEmail = require('../utils/email.js');
+// const bcrypt = require('bcryptjs');
+// const { promisify } = require('util');
 
 //------------------------------------------------------
 //SIGN TOKEN
