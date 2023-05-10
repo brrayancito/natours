@@ -37,6 +37,9 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
+//Preventing duplicate reviews, user can NOT write 2 or more review on same tour
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 //MIDDLEWARE: Documents
 reviewSchema.pre('save', function (next) {
   this.createAt = Date.now();
