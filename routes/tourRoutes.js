@@ -11,8 +11,11 @@ router.route('/top-5-cheap').get(tourController.aliasTopTours, tourController.ge
 
 router.route('/tour-stats').get(tourController.getTourStats);
 
-router.route('/tour-within/:distance/center/:latlng/unit/:unit').get(tourController.getToursWithin);
 //           /tour-within/233/center/8.8923316,-64.1835551/mi
+router.route('/tour-within/:distance/center/:latlng/unit/:unit').get(tourController.getToursWithin);
+
+router.route('/distances/:latlng/unit/:unit').get(tourController.getDistances);
+
 router
   .route('/monthly-plan/:year')
   .get(
