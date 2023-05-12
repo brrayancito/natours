@@ -1,1 +1,30 @@
-h1 The Park Camper
+doctype html 
+html 
+    head 
+        //- title Natours
+        title Natours | #{tour}
+        
+        //- <link rel="stylesheet" href="style.css">
+        link(rel='stylesheet' href='css/style.css') 
+        //- link(rel="stylesheet", href="css/style.css") 
+
+        link(rel='shortcut icon' type='image/png' href='img/favicon.png')
+        //- link(rel="shortcut icon", href="img/favicon.png", type="image/png")
+
+
+    body 
+        div.container
+            p This is DIV 
+        h2= tour 
+
+        //- We can run simple JS (Buffered code)
+        h2= user.toUpperCase()
+        // p this is just text
+        //- p this is just text
+        p this is just some text
+
+        //- We can run simple JS (Unbuffered code)
+        - const num = 10
+        h2= 9 + num 
+        
+        

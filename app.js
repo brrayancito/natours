@@ -19,6 +19,10 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // ----------------------GLOBAL Middlewares 🟨
+//Serving Static files
+app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(`${__dirname}/public`));
+
 //Set Security HTTP headers
 app.use(helmet());
 
@@ -45,9 +49,6 @@ app.use(
   })
 );
 
-//Serving Static files
-app.use(express.static(`${__dirname}/public`));
-
 //Limit requests from same API
 const limiter = rateLimit({
   max: 100,
@@ -70,7 +71,10 @@ app.use((req, res, next) => {
 
 //-------------Routes 🟨
 app.get('/', (req, res) => {
-  res.status(200).render('base');
+  res.status(200).render('base', {
+    tour: 'The Forest Hiker',
+    user: 'Javy',
+  });
 });
 
 app.use('/api/v1/tours', tourRouter);
