@@ -635,10 +635,10 @@ body {
   margin-right: 1px;
 }
 .reviews__star--active {
-  fill: #55c57a;
+  fill: #62e714;
 }
 .reviews__star--inactive {
-  fill: #bbb;
+  fill: #eee5e5;
 }
 
 .section-cta {
