@@ -1,5 +1,6 @@
 const Tour = require('../models/tourModel.js');
 const catchAsync = require('../utils/catchAsync.js');
+const AppError = require('../utils/appError.js');
 
 exports.getOverview = catchAsync(async (req, res, next) => {
   const tours = await Tour.find();
@@ -17,7 +18,10 @@ exports.getTour = catchAsync(async (req, res, next) => {
     fields: 'review rating user',
   });
 
-  //   console.log(tour);
+  if (!tour) {
+    return next(new AppError('There is not tour with that name.', 404));
+  }
+
   // 2) Build templete
 
   // 2) Render template using data from step 1

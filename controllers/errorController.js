@@ -27,34 +27,64 @@ const handledJWTExpiredError = () =>
   new AppError('Invalid Token has expired. Please log in again!', 401);
 
 //---------------------------------------
-const sendErrorDev = (err, res) => {
-  res.status(err.statusCode).json({
-    status: err.status,
+const sendErrorDev = (err, req, res) => {
+  //A) API
+  if (req.originalUrl.startsWith('/api')) {
+    return res.status(err.statusCode).json({
+      status: err.status,
+      message: err.message,
+      error: err,
+      stack: err.stack,
+    });
+  }
+
+  console.error('ERROR🔥', err);
+  //B) RENDERED WEBSITE
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
     message: err.message,
-    error: err,
-    stack: err.stack,
   });
 };
 
-const sendErrorProd = (err, res) => {
-  // Operational, trusted error: send message to client
-  if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
-    });
+const sendErrorProd = (err, req, res) => {
+  //A) API
+  if (req.originalUrl.startsWith('/api')) {
+    // Operational, trusted error: send message to client
+    if (err.isOperational) {
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+      });
+    }
 
-    // Programming or other unkown error: don't leak error details
-  } else {
+    // Programming or other unknown error: don't leak error details
     //1) Log error
     console.error('ERROR🔥', err);
 
     //2) Send generic message
-    res.status(500).json({
-      status: 'error',
-      message: 'Something went very wrong',
+    return res.status(err.statusCode).render('error', {
+      title: 'Something went wrong!',
+      message: err.message,
     });
   }
+
+  //B) RENDERED WEBSITE
+  // Operational, trusted error: send message to client
+  if (err.isOperational) {
+    return res.status(err.statusCode).render('error', {
+      title: 'Something went wrong!',
+      message: err.message,
+    });
+  }
+  // Programming or other unknown error: don't leak error details
+  //1) Log error
+  console.error('ERROR🔥', err);
+
+  //2) Send generic message
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    message: 'Please try again later!',
+  });
 };
 
 //------------------------------------------------
@@ -66,7 +96,7 @@ module.exports = (err, req, res, next) => {
   err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
-    sendErrorDev(err, res);
+    sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV === 'production') {
     let error = Object.assign(err);
     // let error = {...err,};
@@ -76,6 +106,6 @@ module.exports = (err, req, res, next) => {
     if (error.name === 'JsonWebTokenError') error = handledJWTError();
     if (error.name === 'TokenExpiredError') error = handledJWTExpiredError();
 
-    sendErrorProd(error, res);
+    sendErrorProd(error, req, res);
   }
 };
