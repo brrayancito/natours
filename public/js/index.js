@@ -8,6 +8,7 @@ import { displayMap } from './leaflet.js';
 const mapBox = document.getElementById('map');
 const formLogin = document.querySelector('.form');
 const logOutBtn = document.querySelector('.nav__el--logout');
+const showPerfilBtn = document.querySelector('.nav__el--perfil');
 
 // DELEGATION
 if (mapBox) {

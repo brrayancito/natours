@@ -16071,6 +16071,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
         var mapBox = document.getElementById('map');
         var formLogin = document.querySelector('.form');
         var logOutBtn = document.querySelector('.nav__el--logout');
+        var showPerfilBtn = document.querySelector('.nav__el--perfil');
 
         // DELEGATION
         if (mapBox) {
