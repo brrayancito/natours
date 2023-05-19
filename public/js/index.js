@@ -2,13 +2,14 @@
 
 import '@babel/polyfill';
 import { login, logout } from './login.js';
-import { updateUserData } from './updateSettings.js';
+import { updateSettings } from './updateSettings.js';
 import { displayMap } from './leaflet.js';
 
 // DOM ELEMENTS
 const mapBox = document.getElementById('map');
 const formLogin = document.querySelector('.form--login');
-const formUpdateUser = document.querySelector('.form-user-data');
+const formUpdateData = document.querySelector('.form-user-data');
+const formUpdatePassword = document.querySelector('.form-user-password');
 const logOutBtn = document.querySelector('.nav__el--logout');
 
 // DELEGATION
@@ -31,12 +32,36 @@ if (logOutBtn) {
   logOutBtn.addEventListener('click', logout);
 }
 
-if (formUpdateUser) {
-  formUpdateUser.addEventListener('submit', (e) => {
+if (formUpdateData) {
+  formUpdateData.addEventListener('submit', async (e) => {
     e.preventDefault();
+    document.querySelector('.btn--save--setting').textContent = 'Updating...';
+
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
 
-    updateUserData(name, email);
+    await updateSettings({ name, email }, 'data');
+
+    document.querySelector('.btn--save--setting').textContent = 'Save settings';
+  });
+}
+
+if (formUpdatePassword) {
+  formUpdatePassword.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    document.querySelector('.btn--save--password').textContent = 'Updating...';
+
+    const passwordCurrent = document.getElementById('password-current').value;
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('password-confirm').value;
+
+    await updateSettings({ passwordCurrent, password, passwordConfirm }, 'password');
+
+    document.querySelector('.btn--save--password').textContent = 'Save password';
+
+    document.getElementById('password-current').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('password-confirm').value = '';
   });
 }
