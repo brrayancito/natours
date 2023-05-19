@@ -6,7 +6,7 @@ import { displayMap } from './leaflet.js';
 
 // DOM ELEMENTS
 const mapBox = document.getElementById('map');
-const formLogin = document.querySelector('.form');
+const formLogin = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const showPerfilBtn = document.querySelector('.nav__el--perfil');
 

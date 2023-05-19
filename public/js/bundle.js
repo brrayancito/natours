@@ -16069,7 +16069,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
         // DOM ELEMENTS
         var mapBox = document.getElementById('map');
-        var formLogin = document.querySelector('.form');
+        var formLogin = document.querySelector('.form--login');
         var logOutBtn = document.querySelector('.nav__el--logout');
         var showPerfilBtn = document.querySelector('.nav__el--perfil');
 
