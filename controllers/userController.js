@@ -1,4 +1,5 @@
 const multer = require('multer');
+const sharp = require('sharp');
 
 const User = require('../models/userModel.js');
 const catchAsync = require('../utils/catchAsync.js');
@@ -6,17 +7,19 @@ const AppError = require('../utils/appError.js');
 const factory = require('./handlerFactory.js');
 
 //MULTER CONFIGURATIONS
-const multerStorage = multer.diskStorage({
-  destination: (req, file, callback) => {
-    callback(null, 'public/img/users');
-  },
-  filename: (req, file, callback) => {
-    //user-454353dd45rfgf4564-235465445.jpeg
-    const ext = file.mimetype.split('/')[1];
-    callback(null, `user-${req.user.id}-${Date.now()}.${ext}`);
-    //              user-2487dsa54sdshg-2254544565555.jpeg
-  },
-});
+// const multerStorage = multer.diskStorage({
+//   destination: (req, file, callback) => {
+//     callback(null, 'public/img/users');
+//   },
+//   filename: (req, file, callback) => {
+//     //user-454353dd45rfgf4564-235465445.jpeg
+//     const ext = file.mimetype.split('/')[1];
+//     callback(null, `user-${req.user.id}-${Date.now()}.${ext}`);
+//     //              user-2487dsa54sdshg-2254544565555.jpeg
+//   },
+// });
+
+const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
   //If file is not an image, run an ERROR
@@ -38,6 +41,20 @@ const upload = multer({
 //
 exports.uploadUserPhoto = upload.single('photo');
 
+exports.resizeUserPhoto = (req, res, next) => {
+  if (!req.file) return next();
+
+  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+
+  sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.file.filename}`);
+
+  next();
+};
+
 //FILTER A OBJECT
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -50,7 +67,6 @@ const filterObj = (obj, ...allowedFields) => {
 //---------------------------- Update Me 🟨
 exports.updateMe = catchAsync(async (req, res, next) => {
   console.log(req.file);
-  console.log(req.body);
 
   //1) Create a error if user POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
