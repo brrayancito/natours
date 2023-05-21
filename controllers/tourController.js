@@ -1,3 +1,6 @@
+const multer = require('multer');
+const sharp = require('sharp');
+
 const Tour = require('../models/tourModel.js');
 const catchAsync = require('../utils/catchAsync.js');
 const factory = require('./handlerFactory.js');
@@ -210,3 +213,32 @@ exports.getDistances = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+// ------------------ Upload Tour Images
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+  //If file is not an image, run an ERROR
+  if (!file.mimetype.startsWith('image')) {
+    return cb(new AppError('Not an image! Please upload only images.', 404), false);
+  }
+
+  //If file is an image, continue
+  cb(null, true);
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+exports.uploadTourImages = upload.fields([
+  { name: 'imageCover', maxCount: 1 },
+  { name: 'images', maxCount: 3 },
+]);
+
+exports.resizeTourImages = (req, res, next) => {
+  console.log(req.files);
+
+  next();
+};
