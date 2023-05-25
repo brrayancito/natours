@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
-const htmlToText = require('html-to-text');
+// const htmlToText = require('html-to-text');
+const { convert } = require('html-to-text');
 const pug = require('pug');
 
 // const catchAsync = require('./catchAsync.js');
@@ -12,7 +13,7 @@ module.exports = class Email {
     this.from = `brrayancito <${process.env.EMAIL_FROM}>`;
   }
 
-  newTransport() {
+  transporter() {
     if (process.env.NODE_ENV === 'production') {
       // Sendgrid
       return 1;
@@ -30,7 +31,7 @@ module.exports = class Email {
 
   async send(template, subject) {
     // 1) Render HTML based on a pug template
-    const html = pug.renderFile(`${__dirname}/../views/emails/${template}.pug`, {
+    const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
       firstName: this.firstName,
       url: this.url,
       subject,
@@ -42,11 +43,13 @@ module.exports = class Email {
       to: this.to,
       subject,
       html,
-      text: htmlToText.fromString(html),
+      text: convert(html, {
+        wordwrap: 130,
+      }),
     };
 
     // 3) Create a transport and send email
-    await this.newTransport.sendMail(mailOptions);
+    await this.transporter().sendMail(mailOptions);
   }
 
   async sendWelcome() {
