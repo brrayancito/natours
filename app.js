@@ -33,17 +33,20 @@ const scriptSrcUrls = [
   'https://unpkg.com/',
   'https://cdnjs.cloudflare.com/',
   'https://tile.openstreetmap.org',
+  'https://js.stripe.com',
 ];
 const styleSrcUrls = [
   'https://unpkg.com/',
   'https://tile.openstreetmap.org',
   'https://fonts.googleapis.com/',
   'https://cdnjs.cloudflare.com/',
+  'https://js.stripe.com',
 ];
 const connectSrcUrls = [
   'https://unpkg.com',
   'https://cdnjs.cloudflare.com/',
   'https://tile.openstreetmap.org',
+  'https://js.stripe.com',
 ];
 const fontSrcUrls = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 
