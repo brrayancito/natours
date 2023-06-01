@@ -2,6 +2,7 @@ const express = require('express');
 
 const viewsController = require('../controllers/viewsController.js');
 const authController = require('../controllers/authController.js');
+const bookingController = require('../controllers/bookingController.js');
 
 const router = express.Router();
 
@@ -9,9 +10,13 @@ const router = express.Router();
 router.get('/me', authController.protect, viewsController.getAccount);
 router.post('/submit-user-data', authController.protect, viewsController.updateUserData);
 
-router.use(authController.isLoggedIn);
-router.get('/', viewsController.getOverview);
-router.get('/tour/:slug', viewsController.getTour);
-router.get('/login', viewsController.getLoginForm);
+router.get(
+  '/',
+  bookingController.createBookingCheckout,
+  authController.isLoggedIn,
+  viewsController.getOverview
+);
+router.get('/tour/:slug', authController.isLoggedIn, viewsController.getTour);
+router.get('/login', authController.isLoggedIn, viewsController.getLoginForm);
 
 module.exports = router;
