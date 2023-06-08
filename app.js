@@ -7,6 +7,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 
 const AppError = require('./utils/appError.js');
 const globalErrorHandler = require('./controllers/errorController.js');
@@ -106,6 +107,9 @@ app.use('/api', limiter);
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// compression
+app.use(compression());
 
 //Test middleware
 app.use((req, res, next) => {
